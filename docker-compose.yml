@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  angular-client:
+    build: ./angularClient
+    ports:
+      - "4200:4200"
+    depends_on:
+      - servidor-websocket
+
+  vanilla-javascript:
+    build: ./vanillaClient
+    ports:
+      - "80:80"
+    depends_on:
+      - servidor-websocket
+
+  servidor-websocket:
+    build: ./servidor
+    ports:
+      - "8080:8080"

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Chat WebSocket Simple</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 2em auto;
+    background: #f9f9f9;
+    padding: 1em;
+    border-radius: 8px;
+  }
+  #messages {
+    border: 1px solid #ccc;
+    height: 300px;
+    overflow-y: auto;
+    padding: 1em;
+    background: white;
+    border-radius: 6px;
+    margin-bottom: 1em;
+  }
+  .message {
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-radius: 15px;
+    max-width: 70%;
+    word-wrap: break-word;
+    clear: both;
+  }
+  .message.me {
+    background-color: #4caf50;
+    color: white;
+    float: right;
+    border-bottom-right-radius: 0;
+  }
+  .message.other {
+    background-color: #e0e0e0;
+    color: black;
+    float: left;
+    border-bottom-left-radius: 0;
+  }
+  .sender {
+    font-weight: bold;
+    font-size: 0.85em;
+    margin-bottom: 4px;
+  }
+  form {
+    display: flex;
+    gap: 0.5em;
+  }
+  input[type=text] {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+  }
+  button {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #45a049;
+  }
+</style>
+</head>
+<body>
+  <div id="messages"></div>
+  <form id="chat-form">
+    <input type="text" id="input" placeholder="Escribe tu mensaje aquí" autocomplete="off" required />
+    <button type="submit">Enviar</button>
+  </form>
+
+<script>
+  const socket = new WebSocket("ws://servidor-websocket:8080");
+
+  const messagesDiv = document.getElementById("messages");
+  const form = document.getElementById("chat-form");
+  const input = document.getElementById("input");
+
+  function addMessage(text) {
+    const messageEl = document.createElement("div");
+    const textEl = document.createElement("div");
+    textEl.textContent = text;
+    messageEl.appendChild(textEl);
+
+    messagesDiv.appendChild(messageEl);
+  }
+
+  socket.addEventListener("message", (event) => {
+    try {
+      const msg = JSON.parse(event.data);
+      console.log(msg);
+      addMessage(msg.message);
+    } catch (e) {
+      console.error("Error parsing message", e);
+    }
+  });
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if(!input.value.trim()) return;
+
+    socket.send (JSON.stringify({message:input.value}))
+    input.value = "";
+  });
+
+  socket.addEventListener("open", () => {
+    
+  });
+
+  socket.addEventListener("close", () => {
+  });
+  socket.addEventListener("error", () => {
+  });
+</script>
+</body>
+</html>
