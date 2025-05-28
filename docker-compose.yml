@@ -4,18 +4,29 @@ services:
   angular-client:
     build: ./angularClient
     ports:
-      - "4200:4200"
+      - "4200:80"
     depends_on:
       - servidor-websocket
+    networks:
+      - app-network
 
-  vanilla-javascript:
+  vanilla-client:
     build: ./vanillaClient
     ports:
-      - "80:80"
+      - "8081:80"
     depends_on:
       - servidor-websocket
+    networks:
+      - app-network
 
   servidor-websocket:
     build: ./servidor
+    hostname: servidor-websocket
+    container_name: servidor-websocket
     ports:
       - "8080:8080"
+    networks:
+      - app-network
+
+networks:
+  app-network:

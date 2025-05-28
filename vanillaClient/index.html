@@ -79,7 +79,7 @@
   </form>
 
 <script>
-  const socket = new WebSocket("ws://servidor-websocket:8080");
+  const socket = new WebSocket(`ws://${location.host}/ws`);
 
   const messagesDiv = document.getElementById("messages");
   const form = document.getElementById("chat-form");

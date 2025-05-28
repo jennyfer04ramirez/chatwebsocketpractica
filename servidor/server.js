@@ -1,11 +1,16 @@
-const WebSocket = require("ws");
+const http = require('http');
+const WebSocket = require('ws');
 
-const wss = new WebSocket.Server({ port: 8080 });
+// Creamos el servidor HTTP base
+const server = http.createServer();
 
-wss.on('connection', (ws) => {
-  console.log('Cliente conectado');
+// Creamos el WebSocket sobre una ruta específica
+const wss = new WebSocket.Server({ server, path: "/ws" });
 
-  ws.on('message', (message) => {
+wss.on("connection", (ws) => {
+  console.log("Cliente conectado");
+
+  ws.on("message", (message) => {
     console.log(`Mensaje recibido: ${message}`);
 
     let parsed;
@@ -25,9 +30,12 @@ wss.on('connection', (ws) => {
     });
   });
 
-  ws.on('close', () => {
-    console.log('Cliente desconectado');
+  ws.on("close", () => {
+    console.log("Cliente desconectado");
   });
 });
 
-console.log('Servidor levantado');
+// Iniciar el servidor en el puerto 8080
+server.listen(8080, () => {
+  console.log("Servidor WebSocket escuchando en ws://localhost:8080/ws");
+});

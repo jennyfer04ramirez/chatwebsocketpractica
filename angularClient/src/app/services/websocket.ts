@@ -9,7 +9,7 @@ export class WebSocketService {
   private socket$: WebSocketSubject<any>;
 
  constructor() {
-    this.socket$ = webSocket('ws://servidor-websocket:8080');
+    this.socket$ = webSocket(`ws://${location.host}/ws`);
   }
 
   // Send a message to the server
